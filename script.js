@@ -1,4 +1,4 @@
-const SUPABASE_URL = "https://supabase.com/dashboard/project/fispbhpknztuewrzacyf/settings/api-keys";
+const SUPABASE_URL = "https://fispbhpknztuewrzacyf.supabase.co/rest/v1/";
 const SUPABASE_KEY = "sb_publishable_BIc2dFh1BiCvuemZFInSWw_Na366reC";
 
 async function loadTotal() {
