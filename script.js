@@ -1,23 +1,34 @@
-let contributions = 0;
-const goal = 1000;
+const SUPABASE_URL = "https://supabase.com/dashboard/project/fispbhpknztuewrzacyf/settings/api-keys";
+const SUPABASE_KEY = "sb_publishable_BIc2dFh1BiCvuemZFInSWw_Na366reC";
 
-const total = document.getElementById("total");
-const count = document.getElementById("count");
-const progress = document.getElementById("progress");
-const percent = document.getElementById("percent");
-const button = document.getElementById("contribute");
+async function loadTotal() {
+  const response = await fetch(
+  `${SUPABASE_URL}/rest/v1/contributions?select=amount`,
+  {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  }
+);
 
-function update() {
-  total.textContent = `$${contributions.toFixed(2)}`;
-  count.textContent = contributions;
-  const percentage = Math.min((contributions / goal) * 100, 100);
-  progress.style.width = `${percentage}%`;
-  percent.textContent = `${Math.round(percentage)}% of the goal`;
+  if (!response.ok) {
+    console.error("Could not load contributions.");
+    return;
+  }
+
+  const rows = await response.json();
+  const totalAmount = rows.reduce((sum, row) => sum + Number(row.amount || 0), 0);
+
+  document.getElementById("total").textContent =
+    `$${totalAmount.toFixed(2)}`;
+
+  document.getElementById("count").textContent = rows.length;
+
+  const percentage = Math.min((totalAmount / 1000) * 100, 100);
+  document.getElementById("progress").style.width = `${percentage}%`;
+  document.getElementById("percent").textContent =
+    `${Math.round(percentage)}% of the goal`;
 }
 
-button.addEventListener("click", () => {
-  contributions += 1;
-  update();
-});
-
-update();
+loadTotal();
